@@ -1,6 +1,5 @@
 import type React from "react"
-import { createClient } from "@/utils/supabase/server"
-import { redirect } from "next/navigation"
+import { checkAdmin } from "@/utils/auth-check"
 import Link from "next/link"
 
 export default async function AdminLayout({
@@ -8,24 +7,8 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  const supabase = createClient()
-
-  // 사용자 세션 확인
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
-  if (!session) {
-    redirect("/login")
-  }
-
-  // 사용자 프로필 정보 가져오기
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single()
-
-  // 관리자가 아니면 대시보드로 리다이렉트
-  if (!profile || profile.role !== "admin") {
-    redirect("/dashboard")
-  }
+  // 관리자 권한 확인
+  await checkAdmin()
 
   return (
     <div className="min-h-screen flex">

@@ -1,19 +1,11 @@
+import { checkAuth } from "@/utils/auth-check"
 import { createClient } from "@/utils/supabase/server"
-import { redirect } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 export default async function DashboardPage() {
+  const session = await checkAuth()
   const supabase = createClient()
-
-  // 사용자 세션 확인
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
-  if (!session) {
-    redirect("/login")
-  }
 
   // 사용자 프로필 정보 가져오기
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", session.user.id).single()
