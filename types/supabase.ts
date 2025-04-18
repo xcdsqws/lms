@@ -1,29 +1,29 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
-export type Database = {
+export interface Database {
   public: {
     Tables: {
       announcements: {
         Row: {
+          id: string
+          title: string | null
           content: string | null
           created_at: string | null
           created_by: string | null
-          id: string
-          title: string | null
         }
         Insert: {
+          id?: string
+          title?: string | null
           content?: string | null
           created_at?: string | null
           created_by?: string | null
-          id?: string
-          title?: string | null
         }
         Update: {
+          id?: string
+          title?: string | null
           content?: string | null
           created_at?: string | null
           created_by?: string | null
-          id?: string
-          title?: string | null
         }
         Relationships: [
           {
@@ -37,31 +37,31 @@ export type Database = {
       }
       assignments: {
         Row: {
-          created_at: string | null
-          created_by: string | null
+          id: string
+          title: string | null
           description: string | null
           due_date: string | null
-          id: string
+          created_at: string | null
+          created_by: string | null
           subject_id: string | null
-          title: string | null
         }
         Insert: {
-          created_at?: string | null
-          created_by?: string | null
+          id?: string
+          title?: string | null
           description?: string | null
           due_date?: string | null
-          id?: string
+          created_at?: string | null
+          created_by?: string | null
           subject_id?: string | null
-          title?: string | null
         }
         Update: {
-          created_at?: string | null
-          created_by?: string | null
+          id?: string
+          title?: string | null
           description?: string | null
           due_date?: string | null
-          id?: string
+          created_at?: string | null
+          created_by?: string | null
           subject_id?: string | null
-          title?: string | null
         }
         Relationships: [
           {
@@ -82,43 +82,43 @@ export type Database = {
       }
       profiles: {
         Row: {
-          avatar_url: string | null
-          class_number: number | null
-          created_at: string | null
-          full_name: string | null
-          grade: number | null
           id: string
-          role: Database["public"]["Enums"]["user_role"] | null
+          full_name: string | null
+          username: string | null
+          avatar_url: string | null
+          role: "student" | "admin" | null
           school: string | null
+          grade: number | null
+          class_number: number | null
           student_number: number | null
           updated_at: string | null
-          username: string | null
+          created_at: string | null
         }
         Insert: {
-          avatar_url?: string | null
-          class_number?: number | null
-          created_at?: string | null
-          full_name?: string | null
-          grade?: number | null
           id: string
-          role?: Database["public"]["Enums"]["user_role"] | null
+          full_name?: string | null
+          username?: string | null
+          avatar_url?: string | null
+          role?: "student" | "admin" | null
           school?: string | null
+          grade?: number | null
+          class_number?: number | null
           student_number?: number | null
           updated_at?: string | null
-          username?: string | null
+          created_at?: string | null
         }
         Update: {
-          avatar_url?: string | null
-          class_number?: number | null
-          created_at?: string | null
-          full_name?: string | null
-          grade?: number | null
           id?: string
-          role?: Database["public"]["Enums"]["user_role"] | null
+          full_name?: string | null
+          username?: string | null
+          avatar_url?: string | null
+          role?: "student" | "admin" | null
           school?: string | null
+          grade?: number | null
+          class_number?: number | null
           student_number?: number | null
           updated_at?: string | null
-          username?: string | null
+          created_at?: string | null
         }
         Relationships: [
           {
@@ -132,39 +132,46 @@ export type Database = {
       }
       progress: {
         Row: {
-          assignment_id: string | null
-          feedback: string | null
           id: string
-          score: number | null
-          status: string | null
           student_id: string | null
           subject_id: string | null
+          assignment_id: string | null
+          status: string | null
+          score: number | null
+          feedback: string | null
           submitted_at: string | null
           updated_at: string | null
         }
         Insert: {
-          assignment_id?: string | null
-          feedback?: string | null
           id?: string
-          score?: number | null
-          status?: string | null
           student_id?: string | null
           subject_id?: string | null
+          assignment_id?: string | null
+          status?: string | null
+          score?: number | null
+          feedback?: string | null
           submitted_at?: string | null
           updated_at?: string | null
         }
         Update: {
-          assignment_id?: string | null
-          feedback?: string | null
           id?: string
-          score?: number | null
-          status?: string | null
           student_id?: string | null
           subject_id?: string | null
+          assignment_id?: string | null
+          status?: string | null
+          score?: number | null
+          feedback?: string | null
           submitted_at?: string | null
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "progress_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "progress_student_id_fkey"
             columns: ["student_id"]
@@ -183,19 +190,22 @@ export type Database = {
       }
       subjects: {
         Row: {
-          description: string | null
           id: string
           title: string | null
+          description: string | null
+          created_at: string | null
         }
         Insert: {
-          description?: string | null
           id?: string
           title?: string | null
+          description?: string | null
+          created_at?: string | null
         }
         Update: {
-          description?: string | null
           id?: string
           title?: string | null
+          description?: string | null
+          created_at?: string | null
         }
         Relationships: []
       }
