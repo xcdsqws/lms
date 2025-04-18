@@ -1,71 +1,71 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export type Database = {
   public: {
     Tables: {
       announcements: {
-        Row: any;
-        Insert: any;
-        Update: any;
-        Relationships: any;
-      };
+        Row: any
+        Insert: any
+        Update: any
+        Relationships: any
+      }
       assignments: {
-        Row: any;
-        Insert: any;
-        Update: any;
-        Relationships: any;
-      };
+        Row: any
+        Insert: any
+        Update: any
+        Relationships: any
+      }
       profiles: {
-        Row: any;
-        Insert: any;
-        Update: any;
-        Relationships: any;
-      };
+        Row: any
+        Insert: any
+        Update: any
+        Relationships: any
+      }
       progress: {
-        Row: any;
-        Insert: any;
-        Update: any;
-        Relationships: any;
-      };
+        Row: any
+        Insert: any
+        Update: any
+        Relationships: any
+      }
       self_evaluations: {
-        Row: any;
-        Insert: any;
-        Update: any;
-        Relationships: any;
-      };
+        Row: any
+        Insert: any
+        Update: any
+        Relationships: any
+      }
       study_logs: {
-        Row: any;
-        Insert: any;
-        Update: any;
-        Relationships: any;
-      };
+        Row: any
+        Insert: any
+        Update: any
+        Relationships: any
+      }
       study_schedules: {
-        Row: any;
-        Insert: any;
-        Update: any;
-        Relationships: any;
-      };
+        Row: any
+        Insert: any
+        Update: any
+        Relationships: any
+      }
       study_time_logs: {
-        Row: any;
-        Insert: any;
-        Update: any;
-        Relationships: any;
-      };
+        Row: any
+        Insert: any
+        Update: any
+        Relationships: any
+      }
       subjects: {
-        Row: any;
-        Insert: any;
-        Update: any;
-        Relationships: any;
-      };
-    };
+        Row: any
+        Insert: any
+        Update: any
+        Relationships: any
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Enums: {
-      user_role: "student" | "admin";
-    };
-  };
-};
+      user_role: "student" | "admin"
+    }
+  }
+}

@@ -17,7 +17,7 @@ import {
 } from "recharts"
 import { format, eachDayOfInterval, subDays } from "date-fns"
 import { ko } from "date-fns/locale"
-import { getStudentLearningStats } from "@/actions/admin-analytics-actions"
+import { getStudentLearningStats } from "@/actions/student-analytics-actions"
 import { Loader2 } from "lucide-react"
 
 interface Student {
@@ -66,11 +66,11 @@ export function StudentAnalytics({ students }: StudentAnalyticsProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm font-medium text-muted-foreground">이름</p>
-              <p>{student.full_name}</p>
+              <p>{student.full_name || "-"}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">이메일</p>
-              <p>{student.username}</p>
+              <p>{student.username || "-"}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">학교</p>
