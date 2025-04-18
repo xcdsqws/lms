@@ -1,54 +1,74 @@
-import { db } from "@/lib/db"
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
+"use server"
 
-export const getAnalyticsData = async () => {
-  try {
-    const { getUser } = getKindeServerSession()
-    const user = getUser()
+import { createClient } from "@/lib/supabase/server"
+import { format, subDays } from "date-fns"
 
-    if (!user || user.id !== process.env.ADMIN_USER_ID) {
-      return {
-        success: false,
-        message: "Unauthorized",
-        data: null,
-      }
+export async function getAdminAnalyticsData() {
+  const supabase = createClient()
+
+  // 세션 확인
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session) {
+    return {
+      success: false,
+      message: "인증되지 않은 사용자입니다.",
+      data: null,
     }
+  }
 
-    const totalUsers = await db.user.count()
-    const totalDocuments = await db.document.count()
-    const totalSelfEvaluations = await db.selfEvaluation.count()
+  // 관리자 권한 확인
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single()
 
-    const lastMonth = new Date()
-    lastMonth.setMonth(lastMonth.getMonth() - 1)
+  if (profile?.role !== "admin") {
+    return {
+      success: false,
+      message: "관리자 권한이 필요합니다.",
+      data: null,
+    }
+  }
 
-    const newUsersLastMonth = await db.user.count({
-      where: {
-        createdAt: {
-          gte: lastMonth,
-        },
-      },
-    })
+  try {
+    // 최근 30일 날짜 범위
+    const today = new Date()
+    const thirtyDaysAgo = subDays(today, 30)
+    const startDate = format(thirtyDaysAgo, "yyyy-MM-dd")
+    const endDate = format(today, "yyyy-MM-dd")
 
-    const newDocumentsLastMonth = await db.document.count({
-      where: {
-        createdAt: {
-          gte: lastMonth,
-        },
-      },
-    })
+    // 총 사용자 수
+    const { count: totalUsers } = await supabase.from("profiles").select("*", { count: "exact", head: true })
 
-    const newSelfEvaluationsLastMonth = await db.selfEvaluation.count({
-      where: {
-        createdAt: {
-          gte: lastMonth,
-        },
-      },
-    })
+    // 총 학생 수
+    const { count: totalStudents } = await supabase
+      .from("profiles")
+      .select("*", { count: "exact", head: true })
+      .eq("role", "student")
 
-    const selfEvaluations = await db.selfEvaluation.findMany()
+    // 총 과목 수
+    const { count: totalSubjects } = await supabase.from("subjects").select("*", { count: "exact", head: true })
 
+    // 총 과제 수
+    const { count: totalAssignments } = await supabase.from("assignments").select("*", { count: "exact", head: true })
+
+    // 최근 30일간 공부 시간 로그
+    const { data: studyTimeLogs } = await supabase
+      .from("study_time_logs")
+      .select("*, subjects(name)")
+      .gte("study_date", startDate)
+      .lte("study_date", endDate)
+
+    // 최근 30일간 자기평가
+    const { data: selfEvaluations } = await supabase
+      .from("self_evaluations")
+      .select("*")
+      .gte("evaluation_date", startDate)
+      .lte("evaluation_date", endDate)
+
+    // 자기평가 평균 계산
     const evaluationAverages =
-      selfEvaluations.length > 0
+      selfEvaluations && selfEvaluations.length > 0
         ? {
             satisfaction:
               selfEvaluations.reduce((sum, evaluation) => sum + evaluation.satisfaction_level, 0) /
@@ -63,22 +83,26 @@ export const getAnalyticsData = async () => {
 
     return {
       success: true,
-      message: "Analytics data retrieved successfully",
+      message: "분석 데이터를 성공적으로 가져왔습니다.",
       data: {
         totalUsers,
-        totalDocuments,
-        totalSelfEvaluations,
-        newUsersLastMonth,
-        newDocumentsLastMonth,
-        newSelfEvaluationsLastMonth,
+        totalStudents,
+        totalSubjects,
+        totalAssignments,
+        studyTimeLogs: studyTimeLogs || [],
+        selfEvaluations: selfEvaluations || [],
         evaluationAverages,
+        dateRange: {
+          start: startDate,
+          end: endDate,
+        },
       },
     }
   } catch (error) {
-    console.error("[GET_ANALYTICS_DATA]", error)
+    console.error("[GET_ADMIN_ANALYTICS_DATA]", error)
     return {
       success: false,
-      message: "Failed to retrieve analytics data",
+      message: "분석 데이터를 가져오는 중 오류가 발생했습니다.",
       data: null,
     }
   }

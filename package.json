@@ -63,8 +63,7 @@
     "@supabase/auth-helpers-nextjs": "latest",
     "@testing-library/jest-dom": "latest",
     "@testing-library/react": "latest",
-    "@jest/globals": "latest",
-    "@kinde-oss/kinde-auth-nextjs": "latest"
+    "@jest/globals": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",
