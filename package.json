@@ -59,7 +59,12 @@
     "vaul": "^0.9.6",
     "zod": "^3.24.1",
     "@supabase/supabase-js": "latest",
-    "@supabase/auth-helpers-nextjs": "latest"
+    "@testing-library/dom": "latest",
+    "@supabase/auth-helpers-nextjs": "latest",
+    "@testing-library/jest-dom": "latest",
+    "@testing-library/react": "latest",
+    "@jest/globals": "latest",
+    "@kinde-oss/kinde-auth-nextjs": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",
